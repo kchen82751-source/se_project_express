@@ -7,20 +7,20 @@ const {
   deleteItem,
 } = require("../controllers/clothingitems");
 
-//CRUD
+// CRUD
 
-//Create
+// Create
 router.post("/", createItem);
 
-//Reed
+// Reed
 
 router.get("/", getItems);
 
-//Update
+// Update
 
 router.put("/:itemId", updateItem);
 
-//Delete
+// Delete
 
 router.delete("/:itemId", deleteItem);
 

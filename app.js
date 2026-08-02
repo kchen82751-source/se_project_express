@@ -12,13 +12,11 @@ mongoose
   })
   .catch(console.error);
 
-const routes = require("./routes");
 app.use(express.json());
 app.use((req, res, next) => {
   req.user = { _id: "<test user _id>" };
   next();
 });
-app.use(routes);
 
 app.use("/", mainRouter);
 

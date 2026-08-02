@@ -1,6 +1,5 @@
 const ClothingItem = require("../models/clothingItem");
-const Item = require("../models/clothingItem");
-
+const { SERVER_ERROR, BAD_REQUEST } = require("../utils/errors");
 const createItem = (req, res) => {
   console.log(req);
   console.log(req.body);
@@ -13,7 +12,7 @@ const createItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((e) => {
-      res.status(500).send({ message: "Error from createItem", e });
+      res.status(SERVER_ERROR).send({ message: "Error from createItem", e });
     });
 };
 
@@ -43,9 +42,14 @@ const deleteItem = (req, res) => {
   console.log(itemId);
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(204).send({}))
+    .then(() => res.status(200).send({}))
     .catch((e) => {
-      res.status(500).send({ message: "Error from deleteItem", e });
+      if (e.name === "ValidationError") {
+        return res.status(BAD_REQUEST).send({ message: e.message });
+      }
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 module.exports = {
