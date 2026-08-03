@@ -1,5 +1,6 @@
 const ClothingItem = require("../models/clothingItem");
-const { SERVER_ERROR, BAD_REQUEST } = require("../utils/errors");
+const { BAD_REQUEST, SERVER_ERROR } = require("../utils/errors");
+
 const createItem = (req, res) => {
   console.log(req);
   console.log(req.body);
@@ -20,7 +21,7 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((e) => {
-      res.status(500).send({ message: "Error from getItems", e });
+      res.status(SERVER_ERROR).send({ message: "Error from getItems", e });
     });
 };
 
@@ -32,7 +33,7 @@ const updateItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((e) => {
-      res.status(500).send({ message: "Error from updateItem", e });
+      res.status(SERVER_ERROR).send({ message: "Error from updateItem", e });
     });
 };
 
