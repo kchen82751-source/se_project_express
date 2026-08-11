@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
+const { Schema } = mongoose;
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "The name field is required."],
     minlength: 2,
     maxlength: 30,
   },
@@ -17,7 +19,37 @@ const userSchema = new mongoose.Schema({
       },
       message: "You must enter a valid URL",
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
   },
 });
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
+  // trying to find the user by email
+  return this.findOne({ email }).then((user) => {
+    if (!user) {
+      return Promise.reject(new Error("Incorrect email or password"));
+    }
+
+    return bcrypt.compare(password, user.password).then((matched) => {
+      if (!matched) {
+        return Promise.reject(new Error("Incorrect email or password"));
+      }
+
+      return user; // now user is available
+    });
+  });
+};
 
 module.exports = mongoose.model("user", userSchema);
