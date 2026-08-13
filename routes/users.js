@@ -6,4 +6,5 @@ const {
   updateUser,
 } = require("../controllers/users");
 router.patch("/me", updateUser);
+router.post("/", createUser);
 module.exports = router;

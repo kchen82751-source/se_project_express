@@ -1,8 +1,9 @@
 const User = require("../models/user");
 const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const bcrypt = require("bcryptjs");
 
 // GET /users
-module.exports.login = (req, res) => {
+const login = (req, res) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password);
@@ -16,7 +17,7 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       // authentication error
-      res.status(401).send({ message: err.message });
+      res.status(400).send({ message: err.message });
     });
 };
 
@@ -33,13 +34,14 @@ const getUsers = (req, res) => {
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
+  console.log(req.body);
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
 
     .then((user) => res.status(201).send(user))
     .catch((err) => {
-      console.error(err);
+      console.error(err.name);
       if (err.name === "ValidationError") {
         return res.status(400).send({ message: err.message });
       }
@@ -92,4 +94,4 @@ const updateUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, updateUser };
+module.exports = { getUsers, createUser, getCurrentUser, updateUser, login };
