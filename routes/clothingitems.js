@@ -1,16 +1,19 @@
 const router = require("express").Router();
+const { auth } = require("../middleware/auth");
 
 const {
   createItem,
   getItems,
   updateItem,
   deleteItem,
+  likesItem,
+  dislikesItem,
 } = require("../controllers/clothingitems");
 
 // CRUD
 
 // Create
-router.post("/", createItem);
+router.post("/", auth, createItem);
 
 // Reed
 
@@ -22,6 +25,10 @@ router.put("/:itemId", updateItem);
 
 // Delete
 
-router.delete("/:itemId", deleteItem);
+router.delete("/:itemId", auth, deleteItem);
 
-module.exports = router;
+router.delete("/items/:id", auth, likesItem);
+
+router.delete("/items/:id", auth, dislikesItem);
+
+router.module.exports = router;
