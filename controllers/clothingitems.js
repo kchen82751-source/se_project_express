@@ -108,7 +108,7 @@ const dislikesItem = (req, res) => {
       if (item.owner.toString() !== req.user._id.toString()) {
         return res.status();
       }
-      ClothingItem.findByIdAndClickLikeBtn(itemId).then(() =>
+      ClothingItem.findByIdAndClickdisLikeBtn(itemId).then(() =>
         res.status(200).send({})
       );
     })
