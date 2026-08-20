@@ -31,4 +31,4 @@ router.delete("/items/:id", auth, likesItem);
 
 router.delete("/items/:id", auth, dislikesItem);
 
-router.module.exports = router;
+module.exports = router;

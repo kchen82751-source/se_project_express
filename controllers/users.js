@@ -15,7 +15,13 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch(next);
+    .catch((err) => {
+      console.error(err);
+      if (err.message === "Incorrect email or password") {
+        return res.status(401).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 const getUsers = (req, res) => {
