@@ -1,12 +1,22 @@
 const User = require("../models/user");
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  SERVER_ERROR,
+  CONFLICT,
+} = require("../utils/errors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
+const validator = require("validator");
 
 // GET /users
 const login = (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password || !validator.isEmail(email)) {
+    return res.status(400).send({ message: "Invalid credentials" });
+  }
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -56,6 +66,9 @@ const createUser = (req, res) => {
       console.error(err.name);
       if (err.name === "ValidationError") {
         return res.status(400).send({ message: err.message });
+      }
+      if (err.code === 11000) {
+        return res.status(11000).send({ message: err.message });
       }
       return res
         .status(SERVER_ERROR)

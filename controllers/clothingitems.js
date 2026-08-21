@@ -3,6 +3,7 @@ const {
   BAD_REQUEST,
   SERVER_ERROR,
   FORBIDDEN_ERROR,
+  NOT_FOUND,
 } = require("../utils/errors");
 
 const createItem = (req, res) => {
@@ -17,6 +18,11 @@ const createItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((e) => {
+      if (e.name === "ValidationError") {
+        res.status(BAD_REQUEST).send({
+          message: "InvalidData",
+        });
+      }
       res.status(SERVER_ERROR).send({
         message:
           "We are sorry for inconvenience, there's an error from createItem",
@@ -33,7 +39,7 @@ const getItems = (req, res) => {
 };
 
 const updateItem = (req, res) => {
-  const { itemId } = req.param;
+  const { itemId } = req.params;
   const { imageUrl } = req.body;
 
   ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
@@ -52,7 +58,9 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
-        return res.status();
+        return res
+          .status(FORBIDDEN_ERROR)
+          .send({ message: "unauthorized Access" });
       }
       ClothingItem.findByIdAndDelete(itemId).then(() =>
         res.status(200).send({})
@@ -81,7 +89,7 @@ const likesItem = (req, res) => {
       if (item.owner.toString() !== req.user._id.toString()) {
         return res.status();
       }
-      ClothingItem.findByIdAndClickLikeBtn(itemId).then(() =>
+      ClothingItem.findByIdAndUpdate(itemId).then(() =>
         res.status(200).send({})
       );
     })
@@ -108,7 +116,7 @@ const dislikesItem = (req, res) => {
       if (item.owner.toString() !== req.user._id.toString()) {
         return res.status();
       }
-      ClothingItem.findByIdAndClickdisLikeBtn(itemId).then(() =>
+      ClothingItem.findByIdAndUpdate(itemId).then(() =>
         res.status(200).send({})
       );
     })

@@ -3,8 +3,9 @@ const { auth } = require("../middlewares/auth");
 const {
   getUsers,
   createUser,
-  getUser,
   updateUser,
+  getCurrentUser,
 } = require("../controllers/users");
 router.patch("/me", auth, updateUser);
+router.get("/me", auth, getCurrentUser);
 module.exports = router;
