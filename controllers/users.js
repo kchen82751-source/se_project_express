@@ -1,21 +1,23 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const validator = require("validator");
 const User = require("../models/user");
 const {
   BAD_REQUEST,
   NOT_FOUND,
   SERVER_ERROR,
+  UNAUTHORIZED,
   CONFLICT,
 } = require("../utils/errors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const validator = require("validator");
 
 // GET /users
 const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password || !validator.isEmail(email)) {
-    return res.status(400).send({ message: "Invalid credentials" });
+    return res.status(BAD_REQUEST).send({ message: "Invalid credentials" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -28,9 +30,9 @@ const login = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        return res.status(401).send({ message: err.message });
+        return res.status(UNAUTHORIZED).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(SERVER_ERROR).send({ message: err.message });
     });
 };
 
@@ -49,7 +51,7 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   bcrypt
-    .hash(req.body.password, 10)
+    .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
 
     .then((user) => {
@@ -65,10 +67,10 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err.name);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: err.message });
       }
       if (err.code === 11000) {
-        return res.status(11000).send({ message: err.message });
+        return res.status(CONFLICT).send({ message: err.message });
       }
       return res
         .status(SERVER_ERROR)
