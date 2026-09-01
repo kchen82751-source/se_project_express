@@ -18,10 +18,6 @@ Before committing your code, make sure you edit the file `sprint.txt` in the roo
 
 https://drive.google.com/file/d/1-_mwypJRFIR4phwXPKIftut67R7gL5sw/view?usp=drive_link
 
-## se_project_react link
-
-https://github.com/kchen82751-source/se_project_react
-
 ## se_project_express link
 
 https://github.com/kchen82751-source/se_project_express
