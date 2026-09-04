@@ -85,16 +85,17 @@ const deleteItem = (req, res) => {
 const likesItem = (req, res) => {
   const { itemId } = req.params;
 
-  console.log(itemId);
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
         return res.status();
       }
-      return ClothingItem.findByIdAndUpdate(itemId).then(() =>
-        res.status(200).send({})
-      );
+      return ClothingItem.findByIdAndUpdate(
+        itemId,
+        { $addToSet: { likes: req.user._id } },
+        { new: true }
+      ).then((item) => res.status(200).send(item));
     })
     .catch((e) => {
       if (e.name === "CastError") {
@@ -112,16 +113,17 @@ const likesItem = (req, res) => {
 const dislikesItem = (req, res) => {
   const { itemId } = req.params;
 
-  console.log(itemId);
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id.toString()) {
         return res.status();
       }
-      return ClothingItem.findByIdAndUpdate(itemId).then(() =>
-        res.status(200).send({})
-      );
+      return ClothingItem.findByIdAndUpdate(
+        itemId,
+        { $pull: { likes: req.user._id } },
+        { new: true }
+      ).then((item) => res.status(200).send(item));
     })
     .catch((e) => {
       if (e.name === "CastError") {
