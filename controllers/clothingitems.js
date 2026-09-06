@@ -88,9 +88,9 @@ const likesItem = (req, res) => {
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
-      if (item.owner.toString() !== req.user._id.toString()) {
-        return res.status();
-      }
+      // if (item.owner.toString() !== req.user._id.toString()) {
+      //   return res.status();
+      // }
       return ClothingItem.findByIdAndUpdate(
         itemId,
         { $addToSet: { likes: req.user._id } },
@@ -98,6 +98,7 @@ const likesItem = (req, res) => {
       ).then((item) => res.status(200).send(item));
     })
     .catch((e) => {
+      console.error(e);
       if (e.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: "invalid Id" });
       }
