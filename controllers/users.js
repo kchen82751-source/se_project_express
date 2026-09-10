@@ -13,11 +13,11 @@ const {
 const { JWT_SECRET } = require("../utils/config");
 
 // GET /users
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password || !validator.isEmail(email)) {
-    return res.status(BAD_REQUEST).send({ message: "Invalid credentials" });
+    return next(new BadRequestError("invalid data"));
   }
 
   return User.findUserByCredentials(email, password)
@@ -30,7 +30,7 @@ const login = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Incorrect email or password") {
-        return res.status(UNAUTHORIZED).send({ message: err.message });
+        return next(new UnauthorizedError("Unauthorized Access"));
       }
       return res.status(SERVER_ERROR).send({ message: err.message });
     });
@@ -67,10 +67,10 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err.name);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return next(new BadRequestError("invalid data"));
       }
       if (err.code === 11000) {
-        return res.status(CONFLICT).send({ message: err.message });
+        return next(new ConflictError("Error occurred, please try again"));
       }
       return res
         .status(SERVER_ERROR)
@@ -86,10 +86,10 @@ const getCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "User ID not found" });
+        return next(new NotFoundError("Item not Found"));
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "invalid ID" });
+        return next(new BadRequestError("invalid data"));
       }
       return res.status(SERVER_ERROR).send({ message: "server error" });
     });
@@ -112,10 +112,10 @@ const updateUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "User ID not found" });
+        return next(new NotFoundError("Item not Found"));
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "invalid ID" });
+        return next(new BadRequestError("invalid data"));
       }
       return res.status(SERVER_ERROR).send({ message: "server error" });
     });
