@@ -17,3 +17,15 @@ Before committing your code, make sure you edit the file `sprint.txt` in the roo
 ## Project Pitch Video
 
 https://drive.google.com/file/d/1-_mwypJRFIR4phwXPKIftut67R7gL5sw/view?usp=drive_link
+
+## Second Project Pitch Video
+
+https://drive.google.com/file/d/1DcX1kSrHBgMl5qeLH4L21ev5u9w6QTLS/view?usp=drive_link
+
+## Website Link
+
+https://gcp-demo.hbmc.net/
+
+## GitHub repo
+
+https://github.com/kchen82751-source/se_project_express

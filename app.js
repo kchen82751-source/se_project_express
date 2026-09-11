@@ -26,6 +26,11 @@ const { errors } = require("celebrate");
 //...
 
 app.use(requestLogger);
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 app.use("/", mainRouter);
 
 app.use(errorLogger); // enabling the error logger
