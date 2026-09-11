@@ -28,4 +28,4 @@ https://gcp-demo.hbmc.net/
 
 ## GitHub repo
 
-https://github.com/kchen82751-source/se_project_express
+https://github.com/kchen82751-source/se_project_react
