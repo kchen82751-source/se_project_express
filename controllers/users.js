@@ -10,6 +10,7 @@ const {
   UNAUTHORIZED,
   CONFLICT,
 } = require("../utils/errors");
+
 const { JWT_SECRET } = require("../utils/config");
 
 // GET /users
