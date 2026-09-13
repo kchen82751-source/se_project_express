@@ -84,13 +84,13 @@ const likesItem = (req, res, next) => {
 
   ClothingItem.findById(itemId)
     .orFail()
-    .then(() => {
-      return ClothingItem.findByIdAndUpdate(
+    .then(() =>
+      ClothingItem.findByIdAndUpdate(
         itemId,
         { $addToSet: { likes: req.user._id } },
         { new: true }
-      ).then((item) => res.status(200).send(item));
-    })
+      ).then((item) => res.status(200).send(item))
+    )
     .catch((e) => {
       console.error(e);
       if (e.name === "CastError") {
@@ -118,7 +118,7 @@ const dislikesItem = (req, res, next) => {
         itemId,
         { $pull: { likes: req.user._id } },
         { new: true }
-      ).then((item) => res.status(200).send(item));
+      ).then((dislikedItem) => res.status(200).send(dislikedItem));
     })
     .catch((e) => {
       if (e.name === "CastError") {

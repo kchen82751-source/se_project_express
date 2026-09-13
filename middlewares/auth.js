@@ -4,9 +4,8 @@ const { JWT_SECRET } = require("../utils/config");
 
 const { UnauthorizedError } = require("../errors/UnauthorizedError");
 
-const handleAuthError = (res, next) => {
-  return next(new UnauthorizedError("Unauthorized Access"));
-};
+const handleAuthError = (res, next) =>
+  next(new UnauthorizedError("Unauthorized Access"));
 
 const extractBearerToken = (header) => header.replace("Bearer ", "");
 

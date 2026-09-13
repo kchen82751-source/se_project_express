@@ -16,8 +16,6 @@ router.use("/users", validateUsers, userRouter);
 
 router.use("/items", validateCardBody, clothingItem);
 
-router.use((req, res, next) => {
-  return next(new NotFoundError("Item not Found"));
-});
+router.use = (req, res, next) => next(new NotFoundError("Item not Found"));
 
 module.exports = router;
