@@ -28,3 +28,39 @@ module.exports.validateId = celebrate({
     itemId: Joi.string().hex().length(24),
   }),
 });
+
+module.exports.validateSignIn = celebrate({
+  body: Joi.object().keys({
+    password: Joi.string().required().messages({
+      "string.empty": 'The "Password" field must be filled in',
+    }),
+    email: Joi.string().email().required().messages({
+      "string.empty": 'The "Email" field must be filled in',
+      "string.email": 'The "Email" email field must be valid',
+    }),
+  }),
+});
+
+module.exports.validateSignUp = celebrate({
+  body: Joi.object().keys({
+    password: Joi.string().required().messages({
+      "string.empty": 'The "Password" field must be filled in',
+    }),
+    email: Joi.string().email().required().messages({
+      "string.empty": 'The "Email" field must be filled in',
+      "string.email": 'The "Email" email field must be valid',
+    }),
+
+    username: Joi.string().required().messages({
+      "string.empty": 'The "Username" field must be filled in',
+    }),
+  }),
+});
+
+module.exports.validateUsers = celebrate({
+  body: Joi.object().keys({
+    username: Joi.string().required().messages({
+      "string.empty": 'The "Username" field must be filled in',
+    }),
+  }),
+});

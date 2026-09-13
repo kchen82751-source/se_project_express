@@ -2,14 +2,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const validator = require("validator");
+const { BadRequestError } = require("../errors/BadRequestError");
+const { UnauthorizedError } = require("../errors/UnauthorizedError");
+const { ConflictError } = require("../errors/ConflictError");
+const { NotFoundError } = require("../errors/NotFoundError");
 const User = require("../models/user");
-const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  SERVER_ERROR,
-  UNAUTHORIZED,
-  CONFLICT,
-} = require("../utils/errors");
+const { NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
 
@@ -48,7 +46,7 @@ const getUsers = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   bcrypt
@@ -79,7 +77,7 @@ const createUser = (req, res) => {
     });
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .orFail()
@@ -96,7 +94,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const userId = req.user._id;
   return User.findByIdAndUpdate(

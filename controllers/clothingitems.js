@@ -1,11 +1,14 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  BAD_REQUEST,
-  SERVER_ERROR,
-  FORBIDDEN_ERROR,
-  NOT_FOUND,
-  CONFLICT,
-} = require("../utils/errors");
+const { SERVER_ERROR } = require("../utils/errors");
+
+const { BadRequestError } = require("../errors/BadRequestError");
+const { ConflictError } = require("../errors/ConflictError");
+const { NotFoundError } = require("../errors/NotFoundError");
+const { ForbiddenError } = require("../errors/NotFoundError");
+
+// export default function clothingItem ({
+//   handleCardLike,
+// })
 
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
@@ -81,10 +84,7 @@ const likesItem = (req, res, next) => {
 
   ClothingItem.findById(itemId)
     .orFail()
-    .then((item) => {
-      // if (item.owner.toString() !== req.user._id.toString()) {
-      //   return res.status();
-      // }
+    .then(() => {
       return ClothingItem.findByIdAndUpdate(
         itemId,
         { $addToSet: { likes: req.user._id } },
@@ -131,31 +131,6 @@ const dislikesItem = (req, res, next) => {
         .status(SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
-};
-
-const handleCardLike = ({ id, isLiked }) => {
-  // Check if this card is not currently liked
-  !isLiked
-    ? // if so, send a request to add the user's id to the card's likes array
-      api
-        // the first argument is the card's id
-        .addCardLike(id, token)
-        .then((updatedCard) => {
-          setClothingItems((cards) =>
-            cards.map((item) => (item._id === id ? updatedCard : item))
-          );
-        })
-        .catch((err) => console.log(err))
-    : // if not, send a request to remove the user's id from the card's likes array
-      api
-        // the first argument is the card's id
-        .removeCardLike(id, token)
-        .then((updatedCard) => {
-          setClothingItems((cards) =>
-            cards.map((item) => (item._id === id ? updatedCard : item))
-          );
-        })
-        .catch((err) => console.log(err));
 };
 
 module.exports = {
