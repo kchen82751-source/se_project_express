@@ -51,15 +51,19 @@ module.exports.validateSignUp = celebrate({
       "string.email": 'The "Email" email field must be valid',
     }),
 
-    username: Joi.string().required().messages({
+    name: Joi.string().required().messages({
       "string.empty": 'The "Username" field must be filled in',
+    }),
+    avatar: Joi.string().required().custom(validateURL).messages({
+      "string.empty": 'The "imageUrl" field must be filled in',
+      "string.uri": 'the "imageUrl" field must be a valid url',
     }),
   }),
 });
 
 module.exports.validateUsers = celebrate({
   body: Joi.object().keys({
-    username: Joi.string().required().messages({
+    name: Joi.string().required().messages({
       "string.empty": 'The "Username" field must be filled in',
     }),
   }),

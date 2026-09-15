@@ -1,10 +1,10 @@
 const ClothingItem = require("../models/clothingItem");
 const { SERVER_ERROR } = require("../utils/errors");
 
-const { BadRequestError } = require("../errors/BadRequestError");
-const { ConflictError } = require("../errors/ConflictError");
-const { NotFoundError } = require("../errors/NotFoundError");
-const { ForbiddenError } = require("../errors/NotFoundError");
+const BadRequestError = require("../errors/BadRequestError");
+const ConflictError = require("../errors/ConflictError");
+const NotFoundError = require("../errors/NotFoundError");
+const ForbiddenError = require("../errors/ForbiddenError");
 
 // export default function clothingItem ({
 //   handleCardLike,
@@ -25,10 +25,7 @@ const createItem = (req, res, next) => {
       if (e.code === 11000) {
         return next(new ConflictError("this email is already use"));
       }
-      return res.status(SERVER_ERROR).send({
-        message:
-          "We are sorry for inconvenience, there's an error from createItem",
-      });
+      return next(e);
     });
 };
 
@@ -36,7 +33,7 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((e) => {
-      res.status(SERVER_ERROR).send({ message: "Error from getItems", e });
+      return next(e);
     });
 };
 
@@ -48,7 +45,7 @@ const updateItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((e) => {
-      res.status(SERVER_ERROR).send({ message: "Error from updateItem", e });
+      return next(e);
     });
 };
 
@@ -73,9 +70,7 @@ const deleteItem = (req, res, next) => {
       if (e.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item not Found"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(e);
     });
 };
 
@@ -99,9 +94,7 @@ const likesItem = (req, res, next) => {
       if (e.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item not Found"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(e);
     });
 };
 
@@ -127,9 +120,7 @@ const dislikesItem = (req, res, next) => {
       if (e.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item not Found"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(e);
     });
 };
 

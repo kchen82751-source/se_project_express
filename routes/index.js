@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const clothingItem = require("./clothingitems");
-const { NotFoundError } = require("../errors/NotFoundError");
+const NotFoundError = require("../errors/NotFoundError");
 const { login, createUser } = require("../controllers/users");
 
 const userRouter = require("./users");
@@ -12,9 +12,9 @@ const { validateCardBody } = require("../middlewares/validation");
 router.post("/signin", validateSignIn, login);
 router.post("/signup", validateSignUp, createUser);
 
-router.use("/users", validateUsers, userRouter);
+router.use("/users", userRouter);
 
-router.use("/items", validateCardBody, clothingItem);
+router.use("/items", clothingItem);
 
 router.use = (req, res, next) => next(new NotFoundError("Item not Found"));
 
