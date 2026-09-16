@@ -31,7 +31,7 @@ const login = (req, res, next) => {
       if (err.message === "Incorrect email or password") {
         return next(new UnauthorizedError("Unauthorized Access"));
       }
-      return res.status(SERVER_ERROR).send({ message: err.message });
+      return next(e);
     });
 };
 
@@ -40,9 +40,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(e);
     });
 };
 
@@ -71,9 +69,7 @@ const createUser = (req, res, next) => {
       if (err.code === 11000) {
         return next(new ConflictError("Error occurred, please try again"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(e);
     });
 };
 
@@ -90,7 +86,7 @@ const getCurrentUser = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("invalid data"));
       }
-      return res.status(SERVER_ERROR).send({ message: "server error" });
+      return next(e);
     });
 };
 
@@ -116,7 +112,7 @@ const updateUser = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("invalid data"));
       }
-      return res.status(SERVER_ERROR).send({ message: "server error" });
+      return next(e);
     });
 };
 
