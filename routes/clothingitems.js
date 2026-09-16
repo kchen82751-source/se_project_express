@@ -13,6 +13,7 @@ const {
   deleteItem,
   likesItem,
   dislikesItem,
+  getItems,
 } = require("../controllers/clothingitems");
 
 // CRUD
@@ -21,6 +22,8 @@ const {
 router.post("/", auth, validateCreateItem, createItem);
 
 // Reed
+
+router.get("/", getItems);
 
 // Update
 

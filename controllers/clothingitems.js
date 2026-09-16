@@ -1,5 +1,4 @@
 const ClothingItem = require("../models/clothingItem");
-const { SERVER_ERROR } = require("../utils/errors");
 
 const BadRequestError = require("../errors/BadRequestError");
 const ConflictError = require("../errors/ConflictError");
@@ -29,24 +28,20 @@ const createItem = (req, res, next) => {
     });
 };
 
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
-    .catch((e) => {
-      return next(e);
-    });
+    .catch((e) => next(e));
 };
 
-const updateItem = (req, res) => {
+const updateItem = (req, res, next) => {
   const { itemId } = req.params;
   const { imageUrl } = req.body;
 
   ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
     .orFail()
     .then((item) => res.status(200).send({ data: item }))
-    .catch((e) => {
-      return next(e);
-    });
+    .catch((e) => next(e));
 };
 
 const deleteItem = (req, res, next) => {

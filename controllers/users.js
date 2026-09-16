@@ -7,7 +7,7 @@ const UnauthorizedError = require("../errors/UnauthorizedError");
 const ConflictError = require("../errors/ConflictError");
 const NotFoundError = require("../errors/NotFoundError");
 const User = require("../models/user");
-const { NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const { NOT_FOUND } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
 
@@ -31,16 +31,16 @@ const login = (req, res, next) => {
       if (err.message === "Incorrect email or password") {
         return next(new UnauthorizedError("Unauthorized Access"));
       }
-      return next(e);
+      return next(err);
     });
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return next(e);
+      return next(err);
     });
 };
 
@@ -69,7 +69,7 @@ const createUser = (req, res, next) => {
       if (err.code === 11000) {
         return next(new ConflictError("Error occurred, please try again"));
       }
-      return next(e);
+      return next(err);
     });
 };
 
@@ -86,7 +86,7 @@ const getCurrentUser = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("invalid data"));
       }
-      return next(e);
+      return next(err);
     });
 };
 
@@ -112,7 +112,7 @@ const updateUser = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("invalid data"));
       }
-      return next(e);
+      return next(err);
     });
 };
 
